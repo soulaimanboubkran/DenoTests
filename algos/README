@@ -1,0 +1,162 @@
+Got it — let’s slow it down and break it into **tiny steps**!
+
+---
+
+### 🎯 **Goal of the function**
+The function merges two linked lists **alternating nodes** like this:
+
+✅ Example:
+
+- **l1:** `1 → 3 → 5`  
+- **l2:** `2 → 4 → 6`  
+👉 **Result:** `1 → 2 → 3 → 4 → 5 → 6`
+
+---
+
+### 📌 **Step-by-step breakdown**
+
+```typescript
+function mergeAlternately(l1: ListNode | null, l2: ListNode | null): ListNode | null {
+    if (l1 === null) return l2;  // If l1 runs out, return the remaining l2
+    if (l2 === null) return l1;  // If l2 runs out, return the remaining l1
+
+    l1.next = mergeAlternately(l2, l1.next);  // Swap l1 and l2 each call
+    return l1;  // Return l1 as the head of the merged list
+}
+```
+
+---
+
+### 🚀 **What happens during execution?**
+
+Let’s walk through an example:  
+
+- **l1:** `1 → 3 → 5`  
+- **l2:** `2 → 4 → 6`
+
+---
+
+#### 🛠️ **1️⃣ First Call**
+```typescript
+mergeAlternately(1, 2)
+```
+- `l1 = 1`
+- `l2 = 2`
+- `l1.next = mergeAlternately(2, 3)`  
+  → Now we **swap** `l1` and `l2`, so `2` becomes the new `l1`.
+
+---
+
+#### 🔄 **2️⃣ Second Call**
+```typescript
+mergeAlternately(2, 3)
+```
+- `l1 = 2`
+- `l2 = 3`
+- `l1.next = mergeAlternately(3, 4)`  
+  → Swap again — `3` becomes the new `l1`.
+
+---
+
+#### 🔄 **3️⃣ Third Call**
+```typescript
+mergeAlternately(3, 4)
+```
+- `l1 = 3`
+- `l2 = 4`
+- `l1.next = mergeAlternately(4, 5)`  
+  → Swap again — `4` is now `l1`.
+
+---
+
+#### 🔄 **4️⃣ Fourth Call**
+```typescript
+mergeAlternately(4, 5)
+```
+- `l1 = 4`
+- `l2 = 5`
+- `l1.next = mergeAlternately(5, 6)`  
+  → Swap again — `5` becomes `l1`.
+
+---
+
+#### 🔄 **5️⃣ Fifth Call**
+```typescript
+mergeAlternately(5, 6)
+```
+- `l1 = 5`
+- `l2 = 6`
+- `l1.next = mergeAlternately(6, null)`  
+  → Now `l2` is `6`, and `l1.next` takes the final node `6`.
+
+---
+
+#### ✅ **6️⃣ Base Case (Stop recursion!)**
+```typescript
+mergeAlternately(6, null)
+```
+- `l1 = 6`
+- `l2 = null`
+- **Return `l1` (6)** — recursion **stops** here!
+
+---
+
+### 🔁 **Backtracking (Returning results)**
+
+The function now **"reverses back up"** each call, reconnecting nodes:
+
+1. `5.next = 6` → `5 → 6`  
+2. `4.next = 5 → 6` → `4 → 5 → 6`  
+3. `3.next = 4 → 5 → 6` → `3 → 4 → 5 → 6`  
+4. `2.next = 3 → 4 → 5 → 6` → `2 → 3 → 4 → 5 → 6`  
+5. `1.next = 2 → 3 → 4 → 5 → 6` → **Final:** `1 → 2 → 3 → 4 → 5 → 6`
+
+---
+
+### 🔥 **Why this works**
+
+This line is the key:
+```typescript
+l1.next = mergeAlternately(l2, l1.next);
+```
+
+Here’s what happens:  
+- **It flips `l1` and `l2` on each recursion call** — ensuring the nodes alternate.
+- **It "builds the list backward"** as the recursion unwinds — connecting nodes in reverse.
+
+---
+
+### 🎁 **Final Result**
+```plaintext
+1 → 2 → 3 → 4 → 5 → 6 → null
+```
+
+---
+
+### 💡 **Still confused?**
+
+Let me summarize the recursion flow visually:
+
+```
+Call 1: (1, 2) → 1.next = Call 2
+Call 2: (2, 3) → 2.next = Call 3
+Call 3: (3, 4) → 3.next = Call 4
+Call 4: (4, 5) → 4.next = Call 5
+Call 5: (5, 6) → 5.next = Call 6
+Call 6: (6, null) → return 6
+```
+
+Then, it **rewinds the calls**:
+
+```
+Call 5 returns: 5 → 6
+Call 4 returns: 4 → 5 → 6
+Call 3 returns: 3 → 4 → 5 → 6
+Call 2 returns: 2 → 3 → 4 → 5 → 6
+Call 1 returns: 1 → 2 → 3 → 4 → 5 → 6 ✅
+```
+
+---
+
+### 🔧 **Want an iterative version too?**  
+I can rewrite this as a loop-based approach (no recursion) if you prefer — just ask! 🚀✨
