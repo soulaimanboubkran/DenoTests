@@ -88,3 +88,31 @@ function mergeAlternately(l1 : ListNode | null, l2 : ListNode | null): ListNode 
 //
 //l1: 1 → 3 → 5
 //l2: 2 → 4 → 6
+
+
+export function removeNthFromEnd(head: ListNode | null, n: number): ListNode | null {
+    let dummy: ListNode | null = new ListNode(0);
+    dummy.next = head;
+    let back: ListNode | null = dummy;
+    let front: ListNode | null = dummy;
+
+    // Move 'front' n steps ahead
+    for (let i = 0; i <= n; i++) {
+        front = front.next;
+    }
+
+    // If 'front' is null, it means we need to remove the first node
+    if (front === null) {
+        return head.next;
+    }
+
+    // Move both 'front' and 'back' until 'front' reaches the end
+    while (front !== null) {
+        front = front.next;
+        back = back.next;
+    }
+
+    // Skip the target node
+    back.next = back.next.next;
+    return dummy.next; // Return the updated head
+};
