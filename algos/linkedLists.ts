@@ -116,3 +116,44 @@ export function removeNthFromEnd(head: ListNode | null, n: number): ListNode | n
     back.next = back.next.next;
     return dummy.next; // Return the updated head
 };
+class _Node {
+        val: number
+        next: _Node | null
+        random: _Node | null
+    
+        constructor(val?: number, next?: _Node, random?: _Node) {
+            this.val = (val===undefined ? 0 : val)
+            this.next = (next===undefined ? null : next)
+            this.random = (random===undefined ? null : random)
+        }
+    }
+
+export function copyRandomList(head: _Node | null): _Node | null {
+    if (head === null) {
+        return null;
+    }
+
+    const hm: Map<_Node, _Node> = new Map();
+
+    let current: _Node | null = head;
+    hm.set(current, new _Node(current.val));
+    while(current !== null){
+        let currentClone  = hm.get(current);
+        if(current.random !== null && !hm.has(current.random)){
+            hm.set(current.random, new _Node(current.random.val));
+        }
+
+        currentClone!.random = current.random !== null ? hm.get(current.random) : null;
+
+        if(current.next !== null && !hm.has(current.next)){
+            hm.set(current.next, new _Node(current.next.val));
+        }
+
+        currentClone!.next = current.next !== null ? hm.get(current.next) : null;
+        current = current.next;
+    }
+    return hm.get(head);
+
+
+};
+
