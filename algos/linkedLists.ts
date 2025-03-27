@@ -157,3 +157,125 @@ export function copyRandomList(head: _Node | null): _Node | null {
 
 };
 
+export function addTwoNumbers(l1: ListNode | null, l2: ListNode | null): ListNode | null {
+    let dummy : ListNode | null = new ListNode(0);
+    let current : ListNode | null = dummy;
+    let carry : number = 0;
+
+    while(l1 !== null || l2 !== null){
+        let sum = carry;
+        if(l1 !== null){
+            sum += l1.val;
+            l1 = l1.next;
+        }
+        if(l2 !== null){
+            sum += l2.val;
+            l2 = l2.next;
+        }
+        carry = Math.floor(sum / 10);
+        current.next = new ListNode(sum % 10);
+        current = current.next;
+    }
+    if(carry > 0){
+        current.next = new ListNode(carry);
+    }
+    return dummy.next;
+}
+
+export function findDuplicate(nums: number[]): number {
+    
+    let slow : number = nums[0];
+    let fast : number= nums[0];
+
+
+   
+    do {
+        slow = nums[slow];
+        fast = nums[nums[fast]];
+    } while (slow !== fast);
+    slow = nums[0];
+    while(slow !== fast){
+        slow = nums[slow];
+        fast = nums[fast];
+    }
+    return slow;
+};
+
+
+class LRUCache {
+    // Define LRUNode as a nested class
+    private _LRUNode = class {
+        key: number;
+        val: number;
+        next: this | null;
+        prev: this | null;
+
+        constructor(key: number, val: number) {
+            this.key = key;
+            this.val = val;
+            this.next = null;
+            this.prev = null;
+        }
+    };
+
+    private capacity: number;
+    private cache: Map<number, InstanceType<LRUCache['_LRUNode']>>;
+    private head: InstanceType<LRUCache['_LRUNode']>;
+    private tail: InstanceType<LRUCache['_LRUNode']>;
+
+    constructor(capacity: number) {
+        this.capacity = capacity;
+        this.cache = new Map();
+        
+        // Create dummy head and tail nodes
+        this.head = new this._LRUNode(0, 0);
+        this.tail = new this._LRUNode(0, 0);
+        this.head.next = this.tail;
+        this.tail.prev = this.head;
+    }
+
+    get(key: number): number {
+        if (!this.cache.has(key)) return -1;
+
+        const node = this.cache.get(key)!;
+        this.removeNode(node);
+        this.addToFront(node);
+
+        return node.val;
+    }
+
+    put(key: number, value: number): void {
+        // If key exists, update and move to front
+        if (this.cache.has(key)) {
+            const node = this.cache.get(key)!;
+            node.val = value;
+            this.removeNode(node);
+            this.addToFront(node);
+            return;
+        }
+
+        // If at capacity, remove least recently used
+        if (this.cache.size === this.capacity) {
+            const lruNode = this.tail.prev!;
+            this.removeNode(lruNode);
+            this.cache.delete(lruNode.key);
+        }
+
+        // Add new node
+        const newNode = new this._LRUNode(key, value);
+        this.addToFront(newNode);
+        this.cache.set(key, newNode);
+    }
+
+    private removeNode(node: InstanceType<LRUCache['_LRUNode']>): void {
+        node.prev!.next = node.next;
+        node.next!.prev = node.prev;
+    }
+
+    private addToFront(node: InstanceType<LRUCache['_LRUNode']>): void {
+        node.prev = this.head;
+        node.next = this.head.next;
+        this.head.next!.prev = node;
+        this.head.next = node;
+    }
+}
