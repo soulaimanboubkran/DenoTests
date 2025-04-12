@@ -298,3 +298,45 @@ function mergeHelper(lists : Array<ListNode | null>, left: number , right: numbe
 
     return null;
 }
+
+
+
+function reverseKGroup(head: ListNode | null, k: number): ListNode | null {
+    if (head === null || k === 1) return head;
+
+    const dummy = new ListNode(0);
+    dummy.next = head;
+
+    let prevGroupEnd: ListNode = dummy;
+    let current: ListNode | null = head;
+
+    // Count total number of nodes
+    let count = 0;
+    while (current !== null) {
+        count++;
+        current = current.next;
+    }
+
+    current = head;
+    while (count >= k) {
+        const groupStart: ListNode = current!;
+        let prev: ListNode | null = null;
+        let next: ListNode | null = null;
+
+        // Reverse k nodes
+        for (let i = 0; i < k; i++) {
+            next = current!.next;
+            current!.next = prev;
+            prev = current;
+            current = next;
+        }
+
+        // Connect previous group to reversed group
+        prevGroupEnd.next = prev!;
+        groupStart.next = current;
+        prevGroupEnd = groupStart;
+        count -= k;
+    }
+
+    return dummy.next;
+}
