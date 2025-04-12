@@ -281,3 +281,20 @@ class LRUCache {
         this.head.next = node;
     }
 }
+
+function mergeKLists(lists: Array<ListNode | null>): ListNode | null {
+    if(!lists || lists.length === 0) return null;
+    return mergeHelper(lists, 0,lists.length -1);
+};
+
+function mergeHelper(lists : Array<ListNode | null>, left: number , right: number) : ListNode | null {
+    if(left === right ) return lists[left];
+    if(left < right){
+        const mid = left + Math.floor((right - left) /2);
+        const l1 = mergeHelper(lists,left , mid);
+        const l2 = mergeHelper(lists,mid+ 1 , right);
+        return mergeTwoLists(l1 , l2);
+    }
+
+    return null;
+}
