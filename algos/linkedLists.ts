@@ -50,7 +50,7 @@ export function hasCycle(head: ListNode | null): boolean {
     let slow : ListNode | null = head;
 
     while(fast !== null && fast.next !== null){
-        slow = slow.next;
+        slow = slow!.next;
         fast = fast.next.next;
         if(slow === fast) return true;
     }
@@ -67,10 +67,10 @@ export function reorderList(head: ListNode | null): void {
     //split the list into two halves in order to reverse the second half
     while(fast !== null && fast.next !== null){
         prev = slow;
-        slow = slow.next;
+        slow = slow!.next;
         fast = fast.next.next;
     }
-    prev.next = null;
+    prev!.next = null;
 
     //reverse the second half
     let l2 : ListNode | null = reverseList(slow);
@@ -98,22 +98,22 @@ export function removeNthFromEnd(head: ListNode | null, n: number): ListNode | n
 
     // Move 'front' n steps ahead
     for (let i = 0; i <= n; i++) {
-        front = front.next;
+        front = front!.next;
     }
 
     // If 'front' is null, it means we need to remove the first node
     if (front === null) {
-        return head.next;
+        return head!.next;
     }
 
     // Move both 'front' and 'back' until 'front' reaches the end
     while (front !== null) {
         front = front.next;
-        back = back.next;
+        back = back!.next;
     }
 
     // Skip the target node
-    back.next = back.next.next;
+    back!.next = back!.next!.next;
     return dummy.next; // Return the updated head
 };
 class _Node {
@@ -127,35 +127,37 @@ class _Node {
             this.random = (random===undefined ? null : random)
         }
     }
-
-export function copyRandomList(head: _Node | null): _Node | null {
-    if (head === null) {
-        return null;
-    }
-
-    const hm: Map<_Node, _Node> = new Map();
-
-    let current: _Node | null = head;
-    hm.set(current, new _Node(current.val));
-    while(current !== null){
-        let currentClone  = hm.get(current);
-        if(current.random !== null && !hm.has(current.random)){
-            hm.set(current.random, new _Node(current.random.val));
+    export function copyRandomList(head: _Node | null): _Node | null {
+        if (head === null) {
+            return null;
         }
-
-        currentClone!.random = current.random !== null ? hm.get(current.random) : null;
-
-        if(current.next !== null && !hm.has(current.next)){
-            hm.set(current.next, new _Node(current.next.val));
+    
+        const hm: Map<_Node, _Node> = new Map();
+    
+        let current: _Node | null = head;
+        hm.set(current, new _Node(current.val));
+    
+        while (current !== null) {
+            const currentClone = hm.get(current)!;
+    
+            if (current.random !== null && !hm.has(current.random)) {
+                hm.set(current.random, new _Node(current.random.val));
+            }
+    
+            currentClone.random = current.random !== null ? hm.get(current.random) ?? null : null;
+    
+            if (current.next !== null && !hm.has(current.next)) {
+                hm.set(current.next, new _Node(current.next.val));
+            }
+    
+            currentClone.next = current.next !== null ? hm.get(current.next) ?? null : null;
+    
+            current = current.next;
         }
-
-        currentClone!.next = current.next !== null ? hm.get(current.next) : null;
-        current = current.next;
+    
+        return hm.get(head) ?? null;
     }
-    return hm.get(head);
-
-
-};
+    
 
 export function addTwoNumbers(l1: ListNode | null, l2: ListNode | null): ListNode | null {
     let dummy : ListNode | null = new ListNode(0);
