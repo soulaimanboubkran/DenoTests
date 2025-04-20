@@ -29,3 +29,30 @@ export function searchMatrix(matrix: number[][], target: number): boolean {
  
      return false;
  }
+
+ export  function minEatingSpeed(piles: number[], h: number): number {
+    let left : number  = 1;
+    let right: number =   Math.max(...piles);
+
+    while(left <= right){
+        const k:number = left + Math.floor((right - left)/2);
+        if(canEatInTime(piles,k,h)){
+            right = k-1;
+
+        }else{
+            left = k+1;
+        }
+    }
+    return left;
+ };
+ function canEatInTime(piles: number[], k: number, h: number): boolean {
+    let hours: number = 0;
+    
+    for (const pile of piles) {
+        const div: number = Math.floor(pile / k);
+        hours += div;
+        if (pile % k !== 0) hours++;
+    }
+    
+    return hours <= h;
+}
