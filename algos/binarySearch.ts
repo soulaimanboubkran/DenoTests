@@ -56,3 +56,37 @@ export function searchMatrix(matrix: number[][], target: number): boolean {
     
     return hours <= h;
 }
+function searchRotated(nums: number[], target: number): number {
+    let left = 0;
+    let right = nums.length - 1;
+    
+    while (left <= right) {
+        const mid = Math.floor((left + right) / 2);
+        
+        // If we found the target
+        if (nums[mid] === target) {
+            return mid;
+        }
+        
+        // Check if the left half is sorted
+        if (nums[left] <= nums[mid]) {
+            // Check if target is in the left sorted half
+            if (nums[left] <= target && target < nums[mid]) {
+                right = mid - 1; // Search left half
+            } else {
+                left = mid + 1; // Search right half
+            }
+        } 
+        // Right half is sorted
+        else {
+            // Check if target is in the right sorted half
+            if (nums[mid] < target && target <= nums[right]) {
+                left = mid + 1; // Search right half
+            } else {
+                right = mid - 1; // Search left half
+            }
+        }
+    }
+    
+    return -1; // Target not found
+};
